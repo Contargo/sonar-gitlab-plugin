@@ -21,6 +21,7 @@ package com.synaptix.sonar.plugins.gitlab;
 
 import com.synaptix.gitlab.api.GitLabAPI;
 import com.synaptix.gitlab.api.Paged;
+import com.synaptix.gitlab.api.models.GitlabBranchCommit;
 import com.synaptix.gitlab.api.models.commits.GitLabCommitDiff;
 import com.synaptix.gitlab.api.models.projects.GitLabProject;
 import org.apache.commons.io.IOUtils;
@@ -51,6 +52,7 @@ public class CommitFacade {
     private File gitBaseDir;
     private GitLabAPI gitLabAPI;
     private GitLabProject gitLabProject;
+    private GitlabBranchCommit gitlabCommit;
     private Map<String, Set<Integer>> patchPositionMappingByFile;
 
     public CommitFacade(GitLabPluginConfiguration config) {
@@ -109,7 +111,10 @@ public class CommitFacade {
         try {
             gitLabProject = getGitLabProject();
 
-            Paged<GitLabCommitDiff> paged = gitLabAPI.getGitLabAPICommits().getCommitDiffs(gitLabProject.getId(), config.commitSHA(), null);
+            gitlabCommit = gitLabAPI.getGitLabApiBranches().getBranch(gitLabProject.getId(), config.refName())
+                    .getCommit();
+            Paged<GitLabCommitDiff> paged = gitLabAPI.getGitLabAPICommits()
+                    .getCommitDiffs(gitLabProject.getId(), gitlabCommit.getId(), null);
             List<GitLabCommitDiff> commitDiffs = new ArrayList<>();
             do {
                 if (paged.getResults() != null) {
@@ -166,7 +171,9 @@ public class CommitFacade {
 
     public void createOrUpdateSonarQubeStatus(String status, String statusDescription) {
         try {
-            gitLabAPI.getGitLabAPICommits().postCommitStatus(gitLabProject.getId(), config.commitSHA(), status, config.refName(), COMMIT_CONTEXT, null, statusDescription);
+            gitLabAPI.getGitLabAPICommits()
+                .postCommitStatus(gitLabProject.getId(), gitlabCommit.getId(), status, config.refName(), COMMIT_CONTEXT,
+                    null, statusDescription);
         } catch (IOException e) {
             throw new IllegalStateException("Unable to update commit status", e);
         }
@@ -183,7 +190,9 @@ public class CommitFacade {
     public String getGitLabUrl(InputFile inputFile, Integer issueLine) {
         if (inputFile != null) {
             String path = getPath(inputFile);
-            return gitLabProject.getWebUrl() + "/blob/" + config.commitSHA() + "/" + path + (issueLine != null ? ("#L" + issueLine) : "");
+
+            return gitLabProject.getWebUrl() + "/blob/" + gitlabCommit.getId() + "/" + path
+                + (issueLine != null ? ("#L" + issueLine) : "");
         }
         return null;
     }
@@ -192,7 +201,8 @@ public class CommitFacade {
         String fullpath = getPath(inputFile);
         //System.out.println("Review : "+fullpath+" line : "+line);
         try {
-            gitLabAPI.getGitLabAPICommits().postCommitComments(gitLabProject.getId(), config.commitSHA(), body, fullpath, line, "new");
+            gitLabAPI.getGitLabAPICommits()
+                .postCommitComments(gitLabProject.getId(), gitlabCommit.getId(), body, fullpath, line, "new");
         } catch (IOException e) {
             throw new IllegalStateException("Unable to create or update review comment in file " + fullpath + " at line " + line, e);
         }
@@ -204,7 +214,8 @@ public class CommitFacade {
 
     public void addGlobalComment(String comment) {
         try {
-            gitLabAPI.getGitLabAPICommits().postCommitComments(gitLabProject.getId(), config.commitSHA(), comment, null, null, null);
+            gitLabAPI.getGitLabAPICommits()
+                .postCommitComments(gitLabProject.getId(), gitlabCommit.getId(), comment, null, null, null);
         } catch (IOException e) {
             throw new IllegalStateException("Unable to comment the commit", e);
         }
