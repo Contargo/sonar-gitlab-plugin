@@ -41,11 +41,6 @@ public class GitLabPluginConfiguration {
     }
 
     @CheckForNull
-    public String commitSHA() {
-        return settings.getString(GitLabPlugin.GITLAB_COMMIT_SHA);
-    }
-
-    @CheckForNull
     public String refName() {
         return settings.getString(GitLabPlugin.GITLAB_REF_NAME);
     }
@@ -56,7 +51,7 @@ public class GitLabPluginConfiguration {
     }
 
     public boolean isEnabled() {
-        return settings.hasKey(GitLabPlugin.GITLAB_COMMIT_SHA);
+        return true;
     }
 
     @CheckForNull
@@ -77,16 +72,6 @@ public class GitLabPluginConfiguration {
     @CheckForNull
     public boolean ignoreFileNotModified() {
         return settings.getBoolean(GitLabPlugin.GITLAB_IGNORE_FILE);
-    }
-
-    @CheckForNull
-    public String globalTemplate() {
-        return settings.getString(GitLabPlugin.GITLAB_GLOBAL_TEMPLATE);
-    }
-
-    @CheckForNull
-    public String inlineTemplate() {
-        return settings.getString(GitLabPlugin.GITLAB_INLINE_TEMPLATE);
     }
 
 }

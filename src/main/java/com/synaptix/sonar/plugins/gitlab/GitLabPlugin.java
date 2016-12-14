@@ -35,11 +35,8 @@ public class GitLabPlugin extends SonarPlugin {
     public static final String GITLAB_MAX_GLOBAL_ISSUES = "sonar.gitlab.max_global_issues";
     public static final String GITLAB_USER_TOKEN = "sonar.gitlab.user_token";
     public static final String GITLAB_PROJECT_ID = "sonar.gitlab.project_id";
-    public static final String GITLAB_COMMIT_SHA = "sonar.gitlab.commit_sha";
     public static final String GITLAB_REF_NAME = "sonar.gitlab.ref_name";
     public static final String GITLAB_IGNORE_FILE = "sonar.gitlab.ignore_file";
-    public static final String GITLAB_GLOBAL_TEMPLATE = "sonar.gitlab.global_template";
-    public static final String GITLAB_INLINE_TEMPLATE = "sonar.gitlab.inline_template";
 
     public static final String CATEGORY = "gitlab";
     public static final String SUBCATEGORY = "reporting";
@@ -55,16 +52,10 @@ public class GitLabPlugin extends SonarPlugin {
                         PropertyDefinition.builder(GITLAB_PROJECT_ID).name("GitLab Project id")
                                 .description("The unique id, path with namespace, name with namespace, web url, ssh url or http url of the current project that GitLab.").category(CATEGORY)
                                 .subCategory(SUBCATEGORY).index(5).onlyOnQualifiers(Qualifiers.PROJECT).build(),
-                        PropertyDefinition.builder(GITLAB_COMMIT_SHA).name("GitLab Commit SHA").description("The commit revision for which project is built.").category(CATEGORY)
-                                .subCategory(SUBCATEGORY).index(6).hidden().build(),
-                        PropertyDefinition.builder(GITLAB_REF_NAME).name("GitLab Ref Name").description("The commit revision for which project is built.").category(CATEGORY).subCategory(SUBCATEGORY)
-                                .index(7).hidden().build(),
+                        PropertyDefinition.builder(GITLAB_REF_NAME).name("GitLab Ref Name").description("The branch for which project is built.").category(CATEGORY).subCategory(SUBCATEGORY)
+                                .index(6).hidden().build(),
                         PropertyDefinition.builder(GITLAB_IGNORE_FILE).name("GitLab Ingore file").description("Ignore issues on files no modified by the commit").category(CATEGORY)
-                                .subCategory(SUBCATEGORY).type(PropertyType.BOOLEAN).defaultValue(String.valueOf(false)).index(7).hidden().build()/*,
-                        PropertyDefinition.builder(GITLAB_GLOBAL_TEMPLATE).name("GitLab Global Template").description("Template for global comment in commit.").category(CATEGORY)
-                                .subCategory(SUBCATEGORY).type(PropertyType.TEXT).index(8).build(),
-                        PropertyDefinition.builder(GITLAB_INLINE_TEMPLATE).name("GitLab Inline Template").description("Template for inline comment in commit.").category(CATEGORY)
-                                .subCategory(SUBCATEGORY).type(PropertyType.TEXT).index(9).build()*/);
+                                .subCategory(SUBCATEGORY).type(PropertyType.BOOLEAN).defaultValue(String.valueOf(false)).index(7).hidden().build());
     }
 
     @Override

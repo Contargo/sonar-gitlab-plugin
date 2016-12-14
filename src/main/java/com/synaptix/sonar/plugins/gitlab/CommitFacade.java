@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
 @BatchSide
 public class CommitFacade {
 
-    static final String COMMIT_CONTEXT = "sonarqube";
+    private static final String COMMIT_CONTEXT = "sonarqube";
 
     private final GitLabPluginConfiguration config;
     private File gitBaseDir;
@@ -57,13 +57,6 @@ public class CommitFacade {
 
     public CommitFacade(GitLabPluginConfiguration config) {
         this.config = config;
-    }
-
-    private static boolean isEqualsNameWithNamespace(String current, String f) {
-        if (current == null || f == null) {
-            return false;
-        }
-        return current.replaceAll(" ", "").equalsIgnoreCase(f.replaceAll(" ", ""));
     }
 
     private static Map<String, Set<Integer>> mapPatchPositionsToLines(List<GitLabCommitDiff> diffs) throws IOException {
