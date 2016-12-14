@@ -52,7 +52,8 @@ public class GitLabPluginConfiguration {
     }
 
     public boolean isEnabled() {
-        return StringUtils.isNotEmpty(refName());
+        String refName = refName();
+        return refName != null && !refName.isEmpty();
     }
 
     @CheckForNull
