@@ -22,6 +22,7 @@ package com.synaptix.sonar.plugins.gitlab;
 import org.sonar.api.batch.BatchSide;
 import org.sonar.api.batch.InstantiationStrategy;
 import org.sonar.api.config.Settings;
+import org.sonar.api.internal.apachecommons.lang.StringUtils;
 
 import javax.annotation.CheckForNull;
 
@@ -51,7 +52,7 @@ public class GitLabPluginConfiguration {
     }
 
     public boolean isEnabled() {
-        return true;
+        return StringUtils.isNotEmpty(refName());
     }
 
     @CheckForNull
